@@ -34,8 +34,8 @@ def read_ui_state() -> UiState:
     with open(UI_STATE_PATH, "r") as file:
         ui_state_dict = json.loads(file.read())
         ui_state = UiState(
-            mp3_path=ui_state_dict["mp3_path"],
-            file_destination=ui_state_dict["file_destination"],
+            audio_file_path=ui_state_dict["audio_file_path"],
+            export_dir_path=ui_state_dict["export_dir_path"],
             model_type=ui_state_dict["model_type"],
             eng_only=ui_state_dict["eng_only"],
         )
@@ -44,10 +44,10 @@ def read_ui_state() -> UiState:
 
 if __name__ == "__main__":
     ui = UiState(
-        mp3_path="/home/ericnjkim/repo/transcription_tool/_mp3/mp3.mp3",
-        file_destination="/home/ericnjkim/repo/transcription_tool/_exports",
+        audio_file_path="/home/ericnjkim/repo/transcription_tool/_mp3/mp3.mp3",
+        export_dir_path="/home/ericnjkim/repo/transcription_tool/_exports",
         model_type="model_type_1",
         eng_only=True,
     )
     # save_ui_state(ui)
-    print(read_ui_state())
+    print(type(read_ui_state().eng_only))

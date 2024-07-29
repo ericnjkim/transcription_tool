@@ -5,8 +5,8 @@ from dataclasses import dataclass, asdict
 
 @dataclass
 class UiState:
-    mp3_path: str = ""
-    file_destination: str = ""
+    audio_file_path: str = ""
+    export_dir_path: str = ""
     model_type: str = ""
     eng_only: bool = True
 
