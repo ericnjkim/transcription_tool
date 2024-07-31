@@ -3,11 +3,14 @@ import sys
 from datetime import datetime
 
 from PyQt5 import QtWidgets, uic, QtGui
-from PyQt5.QtWidgets import QFileDialog, QMainWindow, QApplication
+from PyQt5.QtWidgets import QFileDialog, QMainWindow, QApplication, QDialog
 
 from scripts.core.functions_transcriptor import transcribe, write_file
 from scripts.core.functions_gui_state_save import save_ui_state, read_ui_state
 from scripts.core.classes import UiState
+
+from scripts.qt.message_dialog import MessageDialog
+from scripts.qt.transcription_thread import TranscriptionThread
 
 UI_FILE = f"{os.path.dirname(__file__)}/ui/transcription_main_window_02.ui"
 
@@ -16,6 +19,9 @@ certain parameters being interacted with but could potentially be much
 cleaner to work with a pull type method of only grabbing the parameter values
 when they are queried for.
 """
+
+# wip
+# add some cleanup for the ui state class to allow for the +".en" operation more smoothly and confirm it stores bool instead of a string when pulling from a json
 
 class TranscriptorMain(QtWidgets.QWidget):
 
@@ -36,6 +42,9 @@ class TranscriptorMain(QtWidgets.QWidget):
         self.btn_transcription_cancel.clicked.connect(
             self._btn_transcription_cancel)
 
+        self.transcription_thread = TranscriptionThread("", "")
+        self.transcription_thread.output_ready.connect(self._on_transcription)
+
         self._setup_or_transcription_toggle(0)
         self._get_ui_state()
         self.datetime = ""
@@ -51,49 +60,36 @@ class TranscriptorMain(QtWidgets.QWidget):
         self.cbox_model_type.setCurrentText(ui_state.model_type)
         self.chkbox_eng_only.setChecked(ui_state.eng_only)
 
+    def _evaluate_current_ui_state(self) -> UiState:
+        """ Turns the gui's current set of parameters into a UiState object."""
+        ui_state = UiState(
+            audio_file_path=self.ledit_audio_file_path.text(),
+            export_dir_path=self.ledit_export_dir_path.text(),
+            model_type=self.cbox_model_type.currentText(),
+            eng_only=self.chkbox_eng_only.isChecked(),
+        )
+        return ui_state
+
     def closeEvent(self, event):
         """ Upon closing the gui, the current ui state is written out so the
         settings are remembered for the next time the gui is called.
         """
-        param_dict = self._evaluate_params()
-        ui_state = UiState(
-            audio_file_path=param_dict["audio_file_path"],
-            export_dir_path=param_dict["export_dir_path"],
-            model_type=param_dict["cbox_model_type"],
-            eng_only=param_dict["chkbox_eng_toggle"],
-        )
+        ui_state = self._evaluate_current_ui_state()
         save_ui_state(ui_state)
-
-    def _evaluate_params(self) -> dict:
-        """ This runs whenever we need to access the current param values."""
-        # rename the qt params when you can
-        model_type = self.cbox_model_type.currentText()
-        if self.chkbox_eng_only.isChecked() and model_type != "large":
-            model_type += ".en"
-
-        param_dict = {
-            "audio_file_path": self.ledit_audio_file_path.text(),
-            "export_dir_path": self.ledit_export_dir_path.text(),
-            "model_type": model_type,
-            # these two are for storing the raw value in the ui state json
-            "cbox_model_type": self.cbox_model_type.currentText(),
-            "chkbox_eng_toggle": self.chkbox_eng_only.isChecked(),
-        }
-        return param_dict
 
     def _btn_audio_file_browser(self) -> None:
         """ Prompts dialog for searching audio file on disk."""
-        param_dict = self._evaluate_params()
+        ui_state = self._evaluate_current_ui_state()
         file_path, filter = QFileDialog.getOpenFileName(
-            self, "Get Audio", param_dict["audio_file_path"])
+            self, "Get Audio", ui_state.audio_file_path)
         if file_path:
             self.ledit_audio_file_path.setText(file_path)
 
     def _btn_export_dir_browser(self) -> None:
         """ Prompts dialog for searching the export directory on disk."""
-        param_dict = self._evaluate_params()
+        ui_state = self._evaluate_current_ui_state()
         dir_path = QFileDialog.getExistingDirectory(
-            self, "Export Directory", param_dict["export_dir_path"])
+            self, "Export Directory", ui_state.export_dir_path)
         if dir_path:
             self.ledit_export_dir_path.setText(dir_path)
 
@@ -101,11 +97,27 @@ class TranscriptorMain(QtWidgets.QWidget):
         """ Transcribes audio file and sets the transcription text window with
         the returned text.
         """
-        param_dict = self._evaluate_params()
-        transcribed_text = transcribe(
-            param_dict["audio_file_path"],
-            param_dict["model_type"])
+        ui_state = self._evaluate_current_ui_state()
+        transcriber_model_type = ui_state.model_type
+        # check eng only is a bool
+        if ui_state.eng_only: # and ui_state.model_type != "large":
+            transcriber_model_type += ".en"
 
+        if not ui_state.check_parameters_valid():
+            msg = ("One or more input path not valid."
+                   "\nCheck all parameters exist and paths are valid.")
+            dlg = MessageDialog(msg)
+            dlg.exec()
+            return None # end operation early if this condition is met
+
+        # transcribed_text = transcribe(
+        #     ui_state.audio_file_path,
+        #     transcriber_model_type)
+        self.transcription_thread.audio_file_path = ui_state.audio_file_path
+        self.transcription_thread.transcriber_model_type = transcriber_model_type
+        self.transcription_thread.start()
+
+    def _on_transcription(self, transcribed_text):
         # adds current datetime to the top of the transcription
         self.datetime = datetime.now().strftime("%Y-%m-%d_%A_%H%M%S")
         transcribed_text = f"{self.datetime}\n\n{transcribed_text}"
@@ -117,11 +129,10 @@ class TranscriptorMain(QtWidgets.QWidget):
         """ Runs the operations for writing out the transcription once the text
         has been checked and confirmed as correct.
         """
-        param_dict = self._evaluate_params()
-        export_dir_path = param_dict["export_dir_path"]
+        ui_state = self._evaluate_current_ui_state()
 
         write_file(
-            export_dir_path=export_dir_path,
+            export_dir_path=ui_state.export_dir_path,
             text=self.ptedit_transcription.toPlainText(),
             name=f"Transcription_{self.datetime}")
         # self.ptedit_transcription.clear()
