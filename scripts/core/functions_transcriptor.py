@@ -1,5 +1,7 @@
 
-# import whisper
+from datetime import datetime
+
+import whisper
 
 # see if you can add option for writing out between md and txt
 def write_file(
@@ -30,19 +32,19 @@ def transcribe(audio_file_path: str, model_type: str) -> str:
         model_type:
         time_stamp:
     """
-    return f"testing some text"
+    # return f"testing some text"
     audio_file_path = audio_file_path.replace("\\", "/")
     model = whisper.load_model(model_type)
-    transcription = model.transcribe(audio_file_path, fp16=False)
+    transcription = model.transcribe(audio_file_path, fp16=False)["text"]
     # interprets the words "new line" as a prompt to break the text.
     transcription = transcription.replace(" new line", "\n")
 
-    return f"{time_stamp}\n\n{transcription}"
+    return transcription
 
 # test run for dev
 if __name__ == "__main__":
-    pass
-    # run(audio_file_path=r"\home\ericnjkim/repo/transcription_tool/_mp3/2023_05_01.mp3",
-    #     model_type="tiny",
-    #     export_dir_path=r"\home\ericnjkim/repo/transcription_tool/_exports",)
-    # create_file(r"\home\ericnjkim/repo/transcription_tool/_exports", "", "00-00")
+    # pass
+    transcription = transcribe(
+        "/home/ericnjkim/repo/transcription_tool/_mp3/2023_05_01.mp3",
+        "tiny")
+    print(transcription)
