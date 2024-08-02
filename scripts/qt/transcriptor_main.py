@@ -110,14 +110,15 @@ class TranscriptorMain(QtWidgets.QWidget):
             dlg.exec()
             return None # end operation early if this condition is met
 
-        # transcribed_text = transcribe(
-        #     ui_state.audio_file_path,
-        #     transcriber_model_type)
         self.transcription_thread.audio_file_path = ui_state.audio_file_path
         self.transcription_thread.transcriber_model_type = transcriber_model_type
         self.transcription_thread.start()
 
     def _on_transcription(self, transcribed_text):
+        """ This function is a continuation of hte _btn_transcribe() and is
+        split like this so a Qthread can take the load of the transcribe
+        function and prevent a gui freeze.
+        """
         # adds current datetime to the top of the transcription
         self.datetime = datetime.now().strftime("%Y-%m-%d_%A_%H%M%S")
         transcribed_text = f"{self.datetime}\n\n{transcribed_text}"
