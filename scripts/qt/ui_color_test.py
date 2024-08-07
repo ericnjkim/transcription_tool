@@ -61,8 +61,7 @@ class TranscriptorMain(QtWidgets.QWidget):
 if __name__ == "__main__":
     from pathlib import Path
     app = QApplication(sys.argv)
-    app.setStyleSheet(Path('ui/darkstyle/darkstyle.qss').read_text())
-    # app.setStyleSheet(Path('ui/breeze_dark.qss').read_text())
+    app.setStyleSheet(Path('qss/dark.qss').read_text())
 
     window = TranscriptorMain()
     window.show()

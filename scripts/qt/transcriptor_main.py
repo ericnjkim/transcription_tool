@@ -179,8 +179,9 @@ class TranscriptorMain(QtWidgets.QWidget):
 
 
 if __name__ == "__main__":
+    from pathlib import Path
     app = QApplication(sys.argv)
-    # set style
+    app.setStyleSheet(Path('qss/dark.qss').read_text())
     window = TranscriptorMain()
     window.show()
     sys.exit(app.exec_())
