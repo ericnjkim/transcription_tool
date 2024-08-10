@@ -4,6 +4,7 @@ import json
 
 from scripts.core.classes import UiState
 
+
 TEMP_DIR = tempfile.gettempdir()
 FILE_NAME = "transcription_tool_ui_state.json"
 UI_STATE_PATH = f"{TEMP_DIR}/{FILE_NAME}"

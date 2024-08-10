@@ -4,7 +4,7 @@ import sys
 from PyQt5 import QtWidgets, uic, QtGui
 from PyQt5.QtWidgets import QFileDialog, QMainWindow, QApplication, QDialog
 
-UI_FILE = f"{os.path.dirname(__file__)}/ui/transcription_main_window_02.ui"
+UI_FILE = f"{os.path.dirname(__file__)}/ui/transcription_main_window.ui"
 
 class TranscriptorMain(QtWidgets.QWidget):
 

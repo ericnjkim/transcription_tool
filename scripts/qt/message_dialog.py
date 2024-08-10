@@ -9,7 +9,9 @@ UI_FILE = f"{os.path.dirname(__file__)}/ui/message_dialog.ui"
 
 
 class MessageDialog(QtWidgets.QDialog):
-
+    """ This widget is to be used as a generic message prompt to alert or
+    inform the user in any way.
+    """
     def __init__(self, text):
         super().__init__()
 

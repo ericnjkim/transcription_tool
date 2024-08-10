@@ -6,6 +6,9 @@ from scripts.core.functions_transcriptor import transcribe
 
 
 class TranscriptionThread(QThread):
+    """ To prevent the heavy operation of transcribing the audio file into text
+    freezing the main gui, the transcribe function is ran on a seperate thread.
+    """
     output_ready = pyqtSignal(str)
 
     def __init__(self, audio_file_path, transcriber_model_type):

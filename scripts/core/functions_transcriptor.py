@@ -3,7 +3,7 @@ from datetime import datetime
 
 import whisper
 
-# see if you can add option for writing out between md and txt
+
 def write_file(
         export_dir_path: str, text: str, name: str = "Transcription") -> None:
     """
@@ -28,9 +28,9 @@ def transcribe(audio_file_path: str, model_type: str) -> str:
     whisper model.
 
     Args:
-        audio_file_path:
-        model_type:
-        time_stamp:
+        audio_file_path: The audio file to transcribe.
+        model_type: The whisper ai model type to use including different sizes
+        and whether to use an english only model.
     """
     # return f"testing some text"
     audio_file_path = audio_file_path.replace("\\", "/")
@@ -40,11 +40,3 @@ def transcribe(audio_file_path: str, model_type: str) -> str:
     transcription = transcription.replace(" new line", "\n")
 
     return transcription
-
-# test run for dev
-if __name__ == "__main__":
-    # pass
-    transcription = transcribe(
-        "/home/ericnjkim/repo/transcription_tool/_mp3/2023_05_01.mp3",
-        "tiny")
-    print(transcription)

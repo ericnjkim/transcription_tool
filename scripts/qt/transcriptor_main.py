@@ -12,19 +12,16 @@ from scripts.core.classes import UiState
 from scripts.qt.message_dialog import MessageDialog
 from scripts.qt.transcription_thread import TranscriptionThread
 
-UI_FILE = f"{os.path.dirname(__file__)}/ui/transcription_main_window_02.ui"
 
-""" currently written with a push type method of having parameters update upon 
-certain parameters being interacted with but could potentially be much
-cleaner to work with a pull type method of only grabbing the parameter values
-when they are queried for.
-"""
+UI_FILE = f"{os.path.dirname(__file__)}/ui/transcription_main_window.ui"
 
-# wip
+
 # add some cleanup for the ui state class to allow for the +".en" operation more smoothly and confirm it stores bool instead of a string when pulling from a json
 
 class TranscriptorMain(QtWidgets.QWidget):
-
+    """ The main window of the transcription tool that ties everything 
+    together. Calling an instance of this will run the tool. 
+    """
     def __init__(self):
         super().__init__()
 
@@ -114,7 +111,7 @@ class TranscriptorMain(QtWidgets.QWidget):
         self.transcription_thread.transcriber_model_type = transcriber_model_type
         self.transcription_thread.start()
 
-    def _on_transcription(self, transcribed_text):
+    def _on_transcription(self, transcribed_text) -> None:
         """ This function is a continuation of hte _btn_transcribe() and is
         split like this so a Qthread can take the load of the transcribe
         function and prevent a gui freeze.
@@ -140,17 +137,14 @@ class TranscriptorMain(QtWidgets.QWidget):
         self._setup_or_transcription_toggle(0)
 
     def _btn_transcription_cancel(self) -> None:
-        """ Runs the operations for writing out the transcription once the text
-        has been checked and confirmed as correct.
-        """
+        """ Cancels the file writeout and turns the gui back to setup mode."""
         self.ptedit_transcription.clear()
         self._setup_or_transcription_toggle(0)
 
     def _setup_or_transcription_toggle(self, switch: int=0) -> None:
         """ Allows the gui to be set between the setup and transcription state
-        by disabling and enabling parts of the gui"""
-        # print("switch", switch)
-
+        by disabling and enabling parts of the gui
+        """
         def setup_section_toggle(switch: bool):
             self.ledit_audio_file_path.setEnabled(switch)
             self.btn_audio_file_browser.setEnabled(switch)
