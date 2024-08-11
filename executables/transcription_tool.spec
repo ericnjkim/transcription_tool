@@ -1,8 +1,9 @@
 # -*- mode: python ; coding: utf-8 -*-
 
 added_files = [
-    ("../scripts/qt/ui/transcription_main_window_02.ui", "ui/."),
-    ("../scripts/qt/qss", "qss/.") # confirm this works
+    ("../scripts/qt/ui/transcription_main_window.ui", "ui/."),
+    ("../scripts/qt/qss/dark.qss", "qss/."),
+    ("../scripts/qt/qss/dark_icons", "qss/dark_icons/")
 ]
 
 a = Analysis(

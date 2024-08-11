@@ -1,6 +1,7 @@
 import os
 import sys
 from datetime import datetime
+from pathlib import Path
 
 from PyQt5 import QtWidgets, uic, QtGui
 from PyQt5.QtWidgets import QFileDialog, QMainWindow, QApplication, QDialog
@@ -172,10 +173,12 @@ class TranscriptorMain(QtWidgets.QWidget):
             pass
 
 
-if __name__ == "__main__":
-    from pathlib import Path
+def run():
+    """ Begins running the transcription tool."""
     app = QApplication(sys.argv)
     app.setStyleSheet(Path('qss/dark.qss').read_text())
     window = TranscriptorMain()
     window.show()
     sys.exit(app.exec_())
+
+run()
