@@ -2,7 +2,7 @@ import sys
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QThread, pyqtSignal
 
-from scripts.core.functions_transcriptor import transcribe
+from core.functions_transcriptor import transcribe
 
 
 class TranscriptionThread(QThread):

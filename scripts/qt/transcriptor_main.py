@@ -6,12 +6,15 @@ from pathlib import Path
 from PyQt5 import QtWidgets, uic, QtGui
 from PyQt5.QtWidgets import QFileDialog, QMainWindow, QApplication, QDialog
 
-from scripts.core.functions_transcriptor import transcribe, write_file
-from scripts.core.functions_gui_state_save import save_ui_state, read_ui_state
-from scripts.core.classes import UiState
+# allows to import from parent directory
+if '..' not in sys.path: sys.path.append('..')
 
-from scripts.qt.message_dialog import MessageDialog
-from scripts.qt.transcription_thread import TranscriptionThread
+from core.functions_transcriptor import transcribe, write_file
+from core.functions_gui_state_save import save_ui_state, read_ui_state
+from core.classes import UiState
+
+from message_dialog import MessageDialog
+from transcription_thread import TranscriptionThread
 
 
 UI_FILE = f"{os.path.dirname(__file__)}/ui/transcription_main_window.ui"
@@ -28,17 +31,12 @@ class TranscriptorMain(QtWidgets.QWidget):
 
         uic.loadUi(UI_FILE, self)
         # setup operations
-        self.cbox_model_type.addItems(
-            ['tiny', 'base', 'small', 'medium', 'large'])
-        self.btn_audio_file_browser.clicked.connect(
-            self._btn_audio_file_browser)
-        self.btn_export_dir_browser.clicked.connect(
-            self._btn_export_dir_browser)
+        self.cbox_model_type.addItems(['tiny', 'base', 'small', 'medium', 'large'])
+        self.btn_audio_file_browser.clicked.connect(self._btn_audio_file_browser)
+        self.btn_export_dir_browser.clicked.connect(self._btn_export_dir_browser)
         self.btn_transcribe.clicked.connect(self._btn_transcribe)
-        self.btn_transcription_confirm.clicked.connect(
-            self._btn_transcription_confirm)
-        self.btn_transcription_cancel.clicked.connect(
-            self._btn_transcription_cancel)
+        self.btn_transcription_confirm.clicked.connect(self._btn_transcription_confirm)
+        self.btn_transcription_cancel.clicked.connect(self._btn_transcription_cancel)
 
         self.transcription_thread = TranscriptionThread("", "")
         self.transcription_thread.output_ready.connect(self._on_transcription)
@@ -52,7 +50,6 @@ class TranscriptorMain(QtWidgets.QWidget):
         there is.
         """
         ui_state = read_ui_state()
-        # print(ui_state)
         self.ledit_audio_file_path.setText(ui_state.audio_file_path)
         self.ledit_export_dir_path.setText(ui_state.export_dir_path)
         self.cbox_model_type.setCurrentText(ui_state.model_type)
@@ -78,18 +75,14 @@ class TranscriptorMain(QtWidgets.QWidget):
     def _btn_audio_file_browser(self) -> None:
         """ Prompts dialog for searching audio file on disk."""
         ui_state = self._evaluate_current_ui_state()
-        file_path, filter = QFileDialog.getOpenFileName(
-            self, "Get Audio", ui_state.audio_file_path)
-        if file_path:
-            self.ledit_audio_file_path.setText(file_path)
+        file_path, filter = QFileDialog.getOpenFileName(self, "Get Audio", ui_state.audio_file_path)
+        if file_path: self.ledit_audio_file_path.setText(file_path)
 
     def _btn_export_dir_browser(self) -> None:
         """ Prompts dialog for searching the export directory on disk."""
         ui_state = self._evaluate_current_ui_state()
-        dir_path = QFileDialog.getExistingDirectory(
-            self, "Export Directory", ui_state.export_dir_path)
-        if dir_path:
-            self.ledit_export_dir_path.setText(dir_path)
+        dir_path = QFileDialog.getExistingDirectory(self, "Export Directory", ui_state.export_dir_path)
+        if dir_path: self.ledit_export_dir_path.setText(dir_path)
 
     def _btn_transcribe(self) -> None:
         """ Transcribes audio file and sets the transcription text window with
@@ -134,7 +127,6 @@ class TranscriptorMain(QtWidgets.QWidget):
             export_dir_path=ui_state.export_dir_path,
             text=self.ptedit_transcription.toPlainText(),
             name=f"Transcription_{self.datetime}")
-        # self.ptedit_transcription.clear()
         self._setup_or_transcription_toggle(0)
 
     def _btn_transcription_cancel(self) -> None:

@@ -30,8 +30,15 @@ the exe.
 - scripts/core/functions_gui_state_save.py: Functions for the tools's gui state save feature.
 - scripts/core/functions_transcriptor.py: Main working logic including use of the transcription model and the writing of files. 
 
+### Installation:
+This project used python3.12. Use requirements.txt to install packages into a virtual environment. Poetry  
+files poetry.lock and pyproject.toml are present but installation from these
+causes an error when it's unable to find installation candidates for some of the 
+dependancies. Something I have yet to figure out.
 
 ### Using the tool:
+Run the tool by running the module scripts/qt/transcriptor_main.py.
+
 The gui works in a two stage process. 
 During the setup stage which is the gui's default state, you can set an input
 file path, an export directory, options for the model type and whether the 

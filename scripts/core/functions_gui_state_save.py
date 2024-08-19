@@ -2,7 +2,7 @@ import os
 import tempfile
 import json
 
-from scripts.core.classes import UiState
+from core.classes import UiState
 
 
 TEMP_DIR = tempfile.gettempdir()
