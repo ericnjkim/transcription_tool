@@ -26,19 +26,11 @@ the exe.
     - scripts/qt/qss/: Qt style sheet and icons for the gui.
     - scripts/qt/ui/: The ui files for the widget layout of the gui.
 
-- scripts/core/classes.py: Stores any custom data classes used in the tools operation.
-- scripts/core/functions_gui_state_save.py: Functions for the tools's gui state save feature.
-- scripts/core/functions_transcriptor.py: Main working logic including use of the transcription model and the writing of files. 
-
-### Installation:
-This project used python3.12. Use requirements.txt to install packages into a virtual environment. Poetry  
-files poetry.lock and pyproject.toml are present but installation from these
-causes an error when it's unable to find installation candidates for some of the 
-dependancies. Something I have yet to figure out.
+### Installation and running:
+This project used python3.12 and can be run directly in an editor or through 
+a terminal by running `python scripts/qt/transcriptor_main.py`.
 
 ### Using the tool:
-Run the tool by running the module scripts/qt/transcriptor_main.py.
-
 The gui works in a two stage process. 
 During the setup stage which is the gui's default state, you can set an input
 file path, an export directory, options for the model type and whether the 
@@ -66,6 +58,8 @@ same settings the next time its run.
 of the gui will be greyed out to prevent problems.
 - Trying to transcribe without setting paths will be met with a dialog message 
 error. 
+- The words "newline" in an audio file will be interpreted as line break in the
+transcription.
 
 ### Challenges
 - The transcribe function being called into the gui would freeze the gui as it
