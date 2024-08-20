@@ -18,8 +18,6 @@ use some skill's and tools I had previously learnt.
 ### Directory contents:
 Further docstrings can be found in modules.
 
-- executables/: Compiled standalone exe to run the project and spec file to build
-the exe.
 - scripts/: working files for the tool.
   - scripts/core/: All logic for the working operation of the tool including use of the transcription model and any generic python library scripts.
   - scripts/qt/: All qt related scripts for tying the core scripts into the gui's widgets.
@@ -28,7 +26,8 @@ the exe.
 
 ### Installation and running:
 This project used python3.12 and can be run directly in an editor or through 
-a terminal by running `python scripts/qt/transcriptor_main.py`.
+a terminal with an active venv by running 
+`python scripts/qt/transcriptor_main.py`.
 
 ### Using the tool:
 The gui works in a two stage process. 
@@ -62,14 +61,9 @@ error.
 transcription.
 
 ### Challenges
-- The transcribe function being called into the gui would freeze the gui as it
+- Threading: The transcribe function being called into the gui would freeze the gui as it
 takes a while to complete its operation. To prevent a gui freeze, the 
 transcription function is called onto a unique QThread before running.
-
-### Future Goals
-- Add options for file type to write out as.
-- Add adjustable naming convention.
-- Upon transcribing, add a loading circle.
 
 ### Credits
 
@@ -78,4 +72,7 @@ https://github.com/SZinedine/QBreeze
 
 
 ### WIP
-- does it work with other audio files?
+- Test if it works with other audio file types?
+- Add options for file type to write out as.
+- Add adjustable naming convention.
+- Upon transcribing, add a loading circle.

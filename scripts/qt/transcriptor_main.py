@@ -168,7 +168,8 @@ class TranscriptorMain(QtWidgets.QWidget):
 def run():
     """ Begins running the transcription tool."""
     app = QApplication(sys.argv)
-    app.setStyleSheet(Path('qss/dark.qss').read_text())
+    qss_path = os.path.dirname(__file__) + "/qss/dark.qss"
+    app.setStyleSheet(Path(qss_path).read_text())
     window = TranscriptorMain()
     window.show()
     sys.exit(app.exec_())
